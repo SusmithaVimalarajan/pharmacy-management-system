@@ -1,0 +1,910 @@
+const token =
+    localStorage.getItem("token");
+
+const user =
+    JSON.parse(localStorage.getItem("user"));
+
+
+if (!token || !user) {
+
+    window.location.href =
+        "/pages/login.html";
+}
+
+
+document.getElementById("userName")
+    .textContent = user.full_name;
+
+document.getElementById("welcomeMessage")
+    .textContent =
+    `Welcome, ${user.full_name} (${user.role})`;
+
+
+const customerSelect =
+    document.getElementById("customerId");
+
+const saleItemsContainer =
+    document.getElementById("saleItems");
+
+const totalAmount =
+    document.getElementById("totalAmount");
+
+const salesTable =
+    document.getElementById("salesTable");
+
+const searchInput =
+    document.getElementById("searchInput");
+
+const addItemBtn =
+    document.getElementById("addItemBtn");
+
+const completeSaleBtn =
+    document.getElementById("completeSaleBtn");
+
+const clearSaleBtn =
+    document.getElementById("clearSaleBtn");
+
+
+let medicines = [];
+
+let sales = [];
+
+
+// =====================================================
+// LOAD MEDICINES
+// =====================================================
+
+async function loadMedicines() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/sales/medicines",
+                {
+                    headers: {
+                        "Authorization":
+                            `Bearer ${token}`
+                    }
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            alert(data.message);
+
+            return;
+        }
+
+
+        medicines = data;
+
+        addSaleItem();
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Unable to load medicines."
+        );
+    }
+}
+
+
+// =====================================================
+// LOAD CUSTOMERS
+// =====================================================
+
+async function loadCustomers() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/sales/customers",
+                {
+                    headers: {
+                        "Authorization":
+                            `Bearer ${token}`
+                    }
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            alert(data.message);
+
+            return;
+        }
+
+
+        customerSelect.innerHTML = `
+            <option value="">
+                Walk-in Customer
+            </option>
+        `;
+
+
+        data.forEach(customer => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                customer.customer_id;
+
+            option.textContent =
+                `${customer.customer_name} ${customer.phone ? "(" + customer.phone + ")" : ""}`;
+
+            customerSelect.appendChild(
+                option
+            );
+        });
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Unable to load customers."
+        );
+    }
+}
+
+
+// =====================================================
+// ADD SALE ITEM
+// =====================================================
+
+function addSaleItem() {
+
+    const item =
+        document.createElement("div");
+
+    item.className =
+        "sale-item";
+
+
+    const medicineOptions =
+        medicines.map(
+            medicine => `
+                <option
+                    value="${medicine.medicine_id}"
+                >
+                    ${medicine.medicine_name}
+                    - Rs. ${Number(
+                        medicine.selling_price
+                    ).toFixed(2)}
+                    (Stock: ${medicine.quantity})
+                </option>
+            `
+        ).join("");
+
+
+    item.innerHTML = `
+
+        <select
+            class="medicine-select"
+            required
+        >
+
+            <option value="">
+                Select Medicine
+            </option>
+
+            ${medicineOptions}
+
+        </select>
+
+
+        <input
+            type="number"
+            class="quantity-input"
+            min="1"
+            value="1"
+            placeholder="Quantity"
+            required
+        >
+
+
+        <span class="item-price">
+            Rs. 0.00
+        </span>
+
+
+        <button
+            type="button"
+            class="remove-item-btn"
+        >
+            Remove
+        </button>
+
+    `;
+
+
+    const medicineSelect =
+        item.querySelector(
+            ".medicine-select"
+        );
+
+    const quantityInput =
+        item.querySelector(
+            ".quantity-input"
+        );
+
+    const priceDisplay =
+        item.querySelector(
+            ".item-price"
+        );
+
+
+    medicineSelect.addEventListener(
+        "change",
+        function() {
+
+            const medicine =
+                medicines.find(
+                    m =>
+                        Number(m.medicine_id) ===
+                        Number(this.value)
+                );
+
+
+            if (medicine) {
+
+                priceDisplay.textContent =
+                    `Rs. ${Number(
+                        medicine.selling_price
+                    ).toFixed(2)}`;
+
+            } else {
+
+                priceDisplay.textContent =
+                    "Rs. 0.00";
+            }
+
+
+            calculateTotal();
+        }
+    );
+
+
+    quantityInput.addEventListener(
+        "input",
+        calculateTotal
+    );
+
+
+    item.querySelector(
+        ".remove-item-btn"
+    ).addEventListener(
+        "click",
+        function() {
+
+            item.remove();
+
+            calculateTotal();
+        }
+    );
+
+
+    saleItemsContainer.appendChild(
+        item
+    );
+
+
+    calculateTotal();
+}
+
+
+// =====================================================
+// CALCULATE TOTAL
+// =====================================================
+
+function calculateTotal() {
+
+    let total = 0;
+
+
+    const items =
+        document.querySelectorAll(
+            ".sale-item"
+        );
+
+
+    items.forEach(item => {
+
+        const medicineId =
+            item.querySelector(
+                ".medicine-select"
+            ).value;
+
+
+        const quantity =
+            Number(
+                item.querySelector(
+                    ".quantity-input"
+                ).value
+            );
+
+
+        const medicine =
+            medicines.find(
+                m =>
+                    Number(m.medicine_id) ===
+                    Number(medicineId)
+            );
+
+
+        if (
+            medicine &&
+            quantity > 0
+        ) {
+
+            total +=
+                Number(
+                    medicine.selling_price
+                ) * quantity;
+        }
+    });
+
+
+    totalAmount.textContent =
+        `Rs. ${total.toFixed(2)}`;
+}
+
+
+// =====================================================
+// COMPLETE SALE
+// =====================================================
+
+completeSaleBtn.addEventListener(
+    "click",
+    async function() {
+
+        const itemElements =
+            document.querySelectorAll(
+                ".sale-item"
+            );
+
+
+        if (
+            itemElements.length === 0
+        ) {
+
+            alert(
+                "Please add at least one medicine."
+            );
+
+            return;
+        }
+
+
+        const items = [];
+
+        const selectedIds = [];
+
+
+        for (
+            const itemElement
+            of itemElements
+        ) {
+
+            const medicineId =
+                itemElement.querySelector(
+                    ".medicine-select"
+                ).value;
+
+
+            const quantity =
+                Number(
+                    itemElement.querySelector(
+                        ".quantity-input"
+                    ).value
+                );
+
+
+            if (!medicineId) {
+
+                alert(
+                    "Please select a medicine."
+                );
+
+                return;
+            }
+
+
+            if (
+                !Number.isInteger(quantity) ||
+                quantity <= 0
+            ) {
+
+                alert(
+                    "Please enter a valid quantity."
+                );
+
+                return;
+            }
+
+
+            if (
+                selectedIds.includes(
+                    medicineId
+                )
+            ) {
+
+                alert(
+                    "The same medicine cannot be added twice."
+                );
+
+                return;
+            }
+
+
+            selectedIds.push(
+                medicineId
+            );
+
+
+            const medicine =
+                medicines.find(
+                    m =>
+                        Number(m.medicine_id) ===
+                        Number(medicineId)
+                );
+
+
+            if (
+                quantity >
+                Number(medicine.quantity)
+            ) {
+
+                alert(
+                    `Insufficient stock for ${medicine.medicine_name}. Available quantity: ${medicine.quantity}.`
+                );
+
+                return;
+            }
+
+
+            items.push({
+                medicine_id:
+                    Number(medicineId),
+
+                quantity:
+                    quantity
+            });
+        }
+
+
+        const confirmSale =
+            confirm(
+                "Are you sure you want to complete this sale?"
+            );
+
+
+        if (!confirmSale) {
+            return;
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/sales",
+                    {
+                        method: "POST",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json",
+
+                            "Authorization":
+                                `Bearer ${token}`
+                        },
+
+                        body:
+                            JSON.stringify({
+                                customer_id:
+                                    customerSelect.value ||
+                                    null,
+
+                                items:
+                                    items
+                            })
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                alert(data.message);
+
+                return;
+            }
+
+
+            alert(
+                `${data.message}\nTotal: Rs. ${data.total_amount}`
+            );
+
+
+            clearSale();
+
+            loadMedicines();
+
+            loadSales();
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Unable to complete sale."
+            );
+        }
+    }
+);
+
+
+// =====================================================
+// CLEAR SALE
+// =====================================================
+
+function clearSale() {
+
+    customerSelect.value = "";
+
+    saleItemsContainer.innerHTML = "";
+
+    totalAmount.textContent =
+        "Rs. 0.00";
+
+    if (medicines.length > 0) {
+
+        addSaleItem();
+    }
+}
+
+
+clearSaleBtn.addEventListener(
+    "click",
+    clearSale
+);
+
+
+// =====================================================
+// LOAD SALES
+// =====================================================
+
+async function loadSales() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/sales",
+                {
+                    headers: {
+                        "Authorization":
+                            `Bearer ${token}`
+                    }
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            alert(data.message);
+
+            return;
+        }
+
+
+        sales = data;
+
+        displaySales(sales);
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Unable to load sales."
+        );
+    }
+}
+
+
+// =====================================================
+// DISPLAY SALES
+// =====================================================
+
+function displaySales(salesData) {
+
+    salesTable.innerHTML = "";
+
+
+    if (
+        salesData.length === 0
+    ) {
+
+        salesTable.innerHTML = `
+            <tr>
+                <td
+                    colspan="6"
+                    class="empty-message"
+                >
+                    No sales found.
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+
+    salesData.forEach(sale => {
+
+        const row =
+            document.createElement("tr");
+
+
+        const date =
+            new Date(
+                sale.sale_date
+            ).toLocaleString();
+
+
+        row.innerHTML = `
+
+            <td>
+                ${sale.sale_id}
+            </td>
+
+            <td>
+                ${sale.customer_name || "Walk-in Customer"}
+            </td>
+
+            <td>
+                ${sale.sold_by_name || "-"}
+            </td>
+
+            <td>
+                ${date}
+            </td>
+
+            <td>
+                Rs. ${Number(
+                    sale.total_amount
+                ).toFixed(2)}
+            </td>
+
+            <td>
+
+                <button
+                    class="view-btn"
+                    onclick="viewSale(
+                        ${sale.sale_id}
+                    )"
+                >
+                    View
+                </button>
+
+            </td>
+        `;
+
+
+        salesTable.appendChild(row);
+    });
+}
+
+
+// =====================================================
+// VIEW SALE
+// =====================================================
+
+async function viewSale(id) {
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/sales/${id}`,
+                {
+                    headers: {
+                        "Authorization":
+                            `Bearer ${token}`
+                    }
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            alert(data.message);
+
+            return;
+        }
+
+
+        let message =
+            `Sale ID: ${data.sale.sale_id}\n`;
+
+        message +=
+            `Customer: ${
+                data.sale.customer_name ||
+                "Walk-in Customer"
+            }\n`;
+
+        message +=
+            `Sold By: ${
+                data.sale.sold_by_name
+            }\n`;
+
+        message +=
+            `Date: ${
+                new Date(
+                    data.sale.sale_date
+                ).toLocaleString()
+            }\n\n`;
+
+        message +=
+            "Items:\n";
+
+
+        data.items.forEach(item => {
+
+            message +=
+                `${item.medicine_name} x ${
+                    item.quantity
+                } = Rs. ${
+                    Number(
+                        item.subtotal
+                    ).toFixed(2)
+                }\n`;
+        });
+
+
+        message +=
+            `\nTotal: Rs. ${
+                Number(
+                    data.sale.total_amount
+                ).toFixed(2)
+            }`;
+
+
+        alert(message);
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Unable to load sale details."
+        );
+    }
+}
+
+
+// =====================================================
+// SEARCH SALES
+// =====================================================
+
+searchInput.addEventListener(
+    "input",
+    function() {
+
+        const search =
+            this.value
+                .trim()
+                .toLowerCase();
+
+
+        if (!search) {
+
+            displaySales(sales);
+
+            return;
+        }
+
+
+        const filtered =
+            sales.filter(sale => {
+
+                return (
+
+                    String(
+                        sale.sale_id
+                    ).includes(search)
+
+                    ||
+
+                    (
+                        sale.customer_name ||
+                        "Walk-in Customer"
+                    )
+                    .toLowerCase()
+                    .includes(search)
+
+                    ||
+
+                    (
+                        sale.sold_by_name ||
+                        ""
+                    )
+                    .toLowerCase()
+                    .includes(search)
+                );
+            });
+
+
+        displaySales(filtered);
+    }
+);
+
+
+// =====================================================
+// LOGOUT
+// =====================================================
+
+document.getElementById(
+    "logoutBtn"
+).addEventListener(
+    "click",
+    function() {
+
+        localStorage.removeItem(
+            "token"
+        );
+
+        localStorage.removeItem(
+            "user"
+        );
+
+        window.location.href =
+            "/pages/login.html";
+    }
+);
+
+
+// =====================================================
+// START
+// =====================================================
+
+loadCustomers();
+
+loadMedicines();
+
+loadSales();

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Sales - Pharmacy Management System
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/dashboard.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/css/sales.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<header class="topbar">
+
+    <h2>
+        Pharmacy Management System
+    </h2>
+
+    <div>
+
+        <span id="userName"></span>
+
+        <button id="logoutBtn">
+            Logout
+        </button>
+
+    </div>
+
+</header>
+
+
+<aside class="sidebar">
+
+     <a href="/pages/dashboard.html">
+            Dashboard
+        </a>
+
+        <a href="/pages/medicines.html">
+            Medicines
+        </a>
+
+        <a href="/pages/categories.html">
+            Categories
+        </a>
+
+        <a href="/pages/suppliers.html">
+            Suppliers
+        </a>
+
+        <a href="/pages/stock.html">
+            Stock
+        </a>
+
+        <a href="/pages/expiry.html">
+            Expiry Monitoring
+        </a>
+
+        <a href="/pages/sales.html">
+            Sales
+        </a>
+
+        <a
+            href="/pages/users.html"
+            id="usersMenu"
+        >
+            Users
+        </a>
+
+</aside>
+
+
+<main class="content">
+
+    <h1>
+        Sales Management
+    </h1>
+
+    <p id="welcomeMessage"></p>
+
+
+    <!-- =============================================
+         CREATE SALE
+         ============================================= -->
+
+    <section class="sale-form">
+
+        <h2>
+            Create New Sale
+        </h2>
+
+
+        <div class="customer-section">
+
+            <label>
+                Customer
+            </label>
+
+            <select id="customerId">
+
+                <option value="">
+                    Walk-in Customer
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="sale-items-section">
+
+            <div class="section-header">
+
+                <h3>
+                    Sale Items
+                </h3>
+
+                <button
+                    type="button"
+                    id="addItemBtn"
+                    class="add-item-btn"
+                >
+                    + Add Medicine
+                </button>
+
+            </div>
+
+
+            <div id="saleItems"></div>
+
+        </div>
+
+
+        <div class="sale-total">
+
+            <span>
+                Total Amount
+            </span>
+
+            <strong id="totalAmount">
+                0.00
+            </strong>
+
+        </div>
+
+
+        <div class="form-buttons">
+
+            <button
+                type="button"
+                id="completeSaleBtn"
+            >
+                Complete Sale
+            </button>
+
+            <button
+                type="button"
+                id="clearSaleBtn"
+                class="cancel-btn"
+            >
+                Clear
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =============================================
+         SALES LIST
+         ============================================= -->
+
+    <section class="sales-list">
+
+        <div class="list-header">
+
+            <h2>
+                Sales History
+            </h2>
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search sale..."
+            >
+
+        </div>
+
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Sale ID
+                    </th>
+
+                    <th>
+                        Customer
+                    </th>
+
+                    <th>
+                        Sold By
+                    </th>
+
+                    <th>
+                        Date
+                    </th>
+
+                    <th>
+                        Total
+                    </th>
+
+                    <th>
+                        Action
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="salesTable"></tbody>
+
+        </table>
+
+    </section>
+
+</main>
+
+
+<script src="/js/sales.js"></script>
+
+</body>
+
+</html>

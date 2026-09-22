@@ -1,0 +1,628 @@
+const express = require("express");
+
+const db = require("../config/db");
+
+const {
+    authenticateToken,
+    authorizeRoles
+} = require("../middleware/authMiddleware");
+
+const router = express.Router();
+
+
+// =====================================================
+// GET ALL SALES
+// =====================================================
+
+router.get(
+    "/",
+    authenticateToken,
+    (req, res) => {
+
+        const sql = `
+            SELECT
+                s.sale_id,
+                s.customer_id,
+                c.customer_name,
+                s.sold_by,
+                u.full_name AS sold_by_name,
+                s.sale_date,
+                s.total_amount
+            FROM sales s
+            LEFT JOIN customers c
+                ON s.customer_id = c.customer_id
+            LEFT JOIN users u
+                ON s.sold_by = u.user_id
+            ORDER BY s.sale_id DESC
+        `;
+
+        db.query(sql, (error, results) => {
+
+            if (error) {
+                console.error(error);
+
+                return res.status(500).json({
+                    message: "Database error."
+                });
+            }
+
+            res.json(results);
+        });
+    }
+);
+
+
+// =====================================================
+// GET MEDICINES FOR SALE
+// =====================================================
+
+router.get(
+    "/medicines",
+    authenticateToken,
+    (req, res) => {
+
+        const sql = `
+            SELECT
+                medicine_id,
+                medicine_name,
+                selling_price,
+                quantity,
+                expiry_date
+            FROM medicines
+            WHERE quantity > 0
+            ORDER BY medicine_name ASC
+        `;
+
+        db.query(sql, (error, results) => {
+
+            if (error) {
+                console.error(error);
+
+                return res.status(500).json({
+                    message: "Database error."
+                });
+            }
+
+            res.json(results);
+        });
+    }
+);
+
+
+// =====================================================
+// GET CUSTOMERS
+// =====================================================
+
+router.get(
+    "/customers",
+    authenticateToken,
+    (req, res) => {
+
+        const sql = `
+            SELECT
+                customer_id,
+                customer_name,
+                phone
+            FROM customers
+            ORDER BY customer_name ASC
+        `;
+
+        db.query(sql, (error, results) => {
+
+            if (error) {
+                console.error(error);
+
+                return res.status(500).json({
+                    message: "Database error."
+                });
+            }
+
+            res.json(results);
+        });
+    }
+);
+
+
+// =====================================================
+// CREATE SALE
+// =====================================================
+
+router.post(
+    "/",
+    authenticateToken,
+    authorizeRoles("admin", "pharmacist", "staff"),
+    (req, res) => {
+
+        const {
+            customer_id,
+            items
+        } = req.body;
+
+
+        if (
+            !items ||
+            !Array.isArray(items) ||
+            items.length === 0
+        ) {
+
+            return res.status(400).json({
+                message:
+                    "At least one medicine is required."
+            });
+        }
+
+
+        // Check duplicate medicines
+        const medicineIds =
+            items.map(item =>
+                Number(item.medicine_id)
+            );
+
+        const uniqueMedicineIds =
+            new Set(medicineIds);
+
+        if (
+            uniqueMedicineIds.size !==
+            medicineIds.length
+        ) {
+
+            return res.status(400).json({
+                message:
+                    "The same medicine cannot be added twice."
+            });
+        }
+
+
+        // Validate quantities
+        for (const item of items) {
+
+            if (
+                !item.medicine_id ||
+                !Number.isInteger(
+                    Number(item.quantity)
+                ) ||
+                Number(item.quantity) <= 0
+            ) {
+
+                return res.status(400).json({
+                    message:
+                        "Each medicine must have a valid quantity."
+                });
+            }
+        }
+
+
+        const medicinePlaceholders =
+            medicineIds.map(() => "?").join(",");
+
+
+        const medicineSql = `
+            SELECT
+                medicine_id,
+                medicine_name,
+                selling_price,
+                quantity
+            FROM medicines
+            WHERE medicine_id IN (${medicinePlaceholders})
+        `;
+
+
+        db.query(
+            medicineSql,
+            medicineIds,
+            (error, medicines) => {
+
+                if (error) {
+                    console.error(error);
+
+                    return res.status(500).json({
+                        message: "Database error."
+                    });
+                }
+
+
+                if (
+                    medicines.length !==
+                    medicineIds.length
+                ) {
+
+                    return res.status(400).json({
+                        message:
+                            "One or more medicines were not found."
+                    });
+                }
+
+
+                let totalAmount = 0;
+
+                const saleItems = [];
+
+
+                for (const item of items) {
+
+                    const medicine =
+                        medicines.find(
+                            m =>
+                                Number(m.medicine_id) ===
+                                Number(item.medicine_id)
+                        );
+
+
+                    const quantity =
+                        Number(item.quantity);
+
+
+                    if (
+                        quantity >
+                        Number(medicine.quantity)
+                    ) {
+
+                        return res.status(400).json({
+                            message:
+                                `Insufficient stock for ${medicine.medicine_name}. Available quantity: ${medicine.quantity}.`
+                        });
+                    }
+
+
+                    const sellingPrice =
+                        Number(
+                            medicine.selling_price
+                        );
+
+
+                    const subtotal =
+                        sellingPrice *
+                        quantity;
+
+
+                    totalAmount += subtotal;
+
+
+                    saleItems.push({
+                        medicine_id:
+                            medicine.medicine_id,
+
+                        quantity:
+                            quantity,
+
+                        selling_price:
+                            sellingPrice,
+
+                        subtotal:
+                            subtotal
+                    });
+                }
+
+
+                db.beginTransaction(
+                    transactionError => {
+
+                        if (transactionError) {
+
+                            console.error(
+                                transactionError
+                            );
+
+                            return res.status(500).json({
+                                message:
+                                    "Unable to start sale transaction."
+                            });
+                        }
+
+
+                        const saleSql = `
+                            INSERT INTO sales
+                            (
+                                customer_id,
+                                sold_by,
+                                total_amount
+                            )
+                            VALUES (?, ?, ?)
+                        `;
+
+
+                        db.query(
+                            saleSql,
+                            [
+                                customer_id || null,
+                                req.user.user_id,
+                                totalAmount
+                            ],
+                            (saleError, saleResult) => {
+
+                                if (saleError) {
+
+                                    return db.rollback(
+                                        () => {
+
+                                            console.error(
+                                                saleError
+                                            );
+
+                                            res.status(500).json({
+                                                message:
+                                                    "Failed to create sale."
+                                            });
+                                        }
+                                    );
+                                }
+
+
+                                const saleId =
+                                    saleResult.insertId;
+
+
+                                const itemSql = `
+                                    INSERT INTO sale_items
+                                    (
+                                        sale_id,
+                                        medicine_id,
+                                        quantity,
+                                        selling_price,
+                                        subtotal
+                                    )
+                                    VALUES ?
+                                `;
+
+
+                                const itemValues =
+                                    saleItems.map(item => [
+                                        saleId,
+                                        item.medicine_id,
+                                        item.quantity,
+                                        item.selling_price,
+                                        item.subtotal
+                                    ]);
+
+
+                                db.query(
+                                    itemSql,
+                                    [itemValues],
+                                    (itemError) => {
+
+                                        if (itemError) {
+
+                                            return db.rollback(
+                                                () => {
+
+                                                    console.error(
+                                                        itemError
+                                                    );
+
+                                                    res.status(500).json({
+                                                        message:
+                                                            "Failed to save sale items."
+                                                    });
+                                                }
+                                            );
+                                        }
+
+
+                                        // Update stock
+                                        let completed =
+                                            0;
+
+
+                                        let stockError =
+                                            null;
+
+
+                                        saleItems.forEach(
+                                            item => {
+
+                                                const stockSql = `
+                                                    UPDATE medicines
+                                                    SET quantity =
+                                                        quantity - ?
+                                                    WHERE medicine_id = ?
+                                                `;
+
+
+                                                db.query(
+                                                    stockSql,
+                                                    [
+                                                        item.quantity,
+                                                        item.medicine_id
+                                                    ],
+                                                    (
+                                                        error
+                                                    ) => {
+
+                                                        if (
+                                                            error &&
+                                                            !stockError
+                                                        ) {
+
+                                                            stockError =
+                                                                error;
+                                                        }
+
+
+                                                        completed++;
+
+
+                                                        if (
+                                                            completed ===
+                                                            saleItems.length
+                                                        ) {
+
+                                                            if (
+                                                                stockError
+                                                            ) {
+
+                                                                return db.rollback(
+                                                                    () => {
+
+                                                                        console.error(
+                                                                            stockError
+                                                                        );
+
+                                                                        res.status(500).json({
+                                                                            message:
+                                                                                "Failed to update stock."
+                                                                        });
+                                                                    }
+                                                                );
+                                                            }
+
+
+                                                            db.commit(
+                                                                commitError => {
+
+                                                                    if (
+                                                                        commitError
+                                                                    ) {
+
+                                                                        return db.rollback(
+                                                                            () => {
+
+                                                                                console.error(
+                                                                                    commitError
+                                                                                );
+
+                                                                                res.status(500).json({
+                                                                                    message:
+                                                                                        "Failed to complete sale."
+                                                                                });
+                                                                            }
+                                                                        );
+                                                                    }
+
+
+                                                                    res.status(201).json({
+                                                                        message:
+                                                                            "Sale completed successfully.",
+
+                                                                        sale_id:
+                                                                            saleId,
+
+                                                                        total_amount:
+                                                                            totalAmount.toFixed(2)
+                                                                    });
+                                                                }
+                                                            );
+                                                        }
+                                                    }
+                                                );
+                                            }
+                                        );
+                                    }
+                                );
+                            }
+                        );
+                    }
+                );
+            }
+        );
+    }
+);
+
+
+// =====================================================
+// GET SALE DETAILS
+// =====================================================
+
+router.get(
+    "/:id",
+    authenticateToken,
+    (req, res) => {
+
+        const saleId =
+            req.params.id;
+
+
+        const saleSql = `
+            SELECT
+                s.sale_id,
+                s.customer_id,
+                c.customer_name,
+                c.phone,
+                s.sold_by,
+                u.full_name AS sold_by_name,
+                s.sale_date,
+                s.total_amount
+            FROM sales s
+            LEFT JOIN customers c
+                ON s.customer_id = c.customer_id
+            LEFT JOIN users u
+                ON s.sold_by = u.user_id
+            WHERE s.sale_id = ?
+        `;
+
+
+        db.query(
+            saleSql,
+            [saleId],
+            (error, saleResults) => {
+
+                if (error) {
+
+                    console.error(error);
+
+                    return res.status(500).json({
+                        message:
+                            "Database error."
+                    });
+                }
+
+
+                if (
+                    saleResults.length === 0
+                ) {
+
+                    return res.status(404).json({
+                        message:
+                            "Sale not found."
+                    });
+                }
+
+
+                const itemSql = `
+                    SELECT
+                        si.sale_item_id,
+                        si.medicine_id,
+                        m.medicine_name,
+                        si.quantity,
+                        si.selling_price,
+                        si.subtotal
+                    FROM sale_items si
+                    INNER JOIN medicines m
+                        ON si.medicine_id = m.medicine_id
+                    WHERE si.sale_id = ?
+                `;
+
+
+                db.query(
+                    itemSql,
+                    [saleId],
+                    (itemError, itemResults) => {
+
+                        if (itemError) {
+
+                            console.error(
+                                itemError
+                            );
+
+                            return res.status(500).json({
+                                message:
+                                    "Database error."
+                            });
+                        }
+
+
+                        res.json({
+                            sale:
+                                saleResults[0],
+
+                            items:
+                                itemResults
+                        });
+                    }
+                );
+            }
+        );
+    }
+);
+
+
+module.exports = router;

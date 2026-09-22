@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Medicines - Pharmacy Management System</title>
+
+    <link rel="stylesheet"
+          href="/css/dashboard.css">
+
+    <link rel="stylesheet"
+          href="/css/medicine.css">
+
+    
+
+</head>
+
+<body>
+
+<header class="topbar">
+
+    <h2>Pharmacy Management System</h2>
+
+    <div>
+
+        <span id="userName"></span>
+
+        <button id="logoutBtn">
+            Logout
+        </button>
+
+    </div>
+
+</header>
+
+
+<aside class="sidebar">
+
+     <a href="/pages/dashboard.html">
+            Dashboard
+        </a>
+
+        <a href="/pages/medicines.html">
+            Medicines
+        </a>
+
+        <a href="/pages/categories.html">
+            Categories
+        </a>
+
+        <a href="/pages/suppliers.html">
+            Suppliers
+        </a>
+
+        <a href="/pages/stock.html">
+            Stock
+        </a>
+
+        <a href="/pages/expiry.html">
+            Expiry Monitoring
+        </a>
+
+        <a href="/pages/sales.html">
+            Sales
+        </a>
+
+        <a
+            href="/pages/users.html"
+            id="usersMenu"
+        >
+            Users
+        </a>
+</aside>
+
+
+<main class="content">
+
+    <h1>Medicine Management</h1>
+
+    <p id="welcomeMessage"></p>
+
+
+    <!-- Medicine Form -->
+
+    <section class="medicine-form">
+
+        <h2 id="formTitle">
+            Add New Medicine
+        </h2>
+
+        <form id="medicineForm">
+
+            <input
+                type="hidden"
+                id="medicineId"
+            >
+
+
+            <div class="form-grid">
+
+                <div>
+
+                    <label>
+                        Medicine Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="medicineName"
+                        required
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Category ID
+                    </label>
+
+                    <input
+                        type="number"
+                        id="categoryId"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Supplier ID
+                    </label>
+
+                    <input
+                        type="number"
+                        id="supplierId"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Batch Number
+                    </label>
+
+                    <input
+                        type="text"
+                        id="batchNumber"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Purchase Price
+                    </label>
+
+                    <input
+                        type="number"
+                        step="0.01"
+                        id="purchasePrice"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Selling Price
+                    </label>
+
+                    <input
+                        type="number"
+                        step="0.01"
+                        id="sellingPrice"
+                        required
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Quantity
+                    </label>
+
+                    <input
+                        type="number"
+                        id="quantity"
+                        min="0"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Reorder Level
+                    </label>
+
+                    <input
+                        type="number"
+                        id="reorderLevel"
+                        min="0"
+                        value="10"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Expiry Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="expiryDate"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="form-buttons">
+
+                <button type="submit">
+                    Save Medicine
+                </button>
+
+                <button
+                    type="button"
+                    id="cancelBtn"
+                    class="cancel-btn"
+                >
+                    Cancel
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+
+    <!-- Search -->
+
+    <section class="medicine-list">
+
+        <div class="list-header">
+
+            <h2>
+                Medicine List
+            </h2>
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search medicine..."
+            >
+
+        </div>
+
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Medicine</th>
+
+                    <th>Category</th>
+
+                    <th>Supplier</th>
+
+                    <th>Batch</th>
+
+                    <th>Price</th>
+
+                    <th>Quantity</th>
+
+                    <th>Expiry</th>
+
+                    <th>Actions</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="medicineTable">
+
+            </tbody>
+
+        </table>
+
+    </section>
+
+</main>
+
+
+<script src="/js/medicines.js"></script>
+
+</body>
+
+</html>

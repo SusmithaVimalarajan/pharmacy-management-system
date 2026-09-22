@@ -1,0 +1,259 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.user-form,
+.user-list {
+    background: #ffffff;
+    padding: 28px;
+    margin-top: 25px;
+    border-radius: 14px;
+    border: 1px solid #e5e7eb;
+    box-shadow:
+        0 4px 18px rgba(0, 0, 0, 0.06);
+}
+
+.content h1 {
+    font-size: 30px;
+    color: #111827;
+    margin-bottom: 8px;
+}
+
+#welcomeMessage {
+    color: #64748b;
+    font-size: 15px;
+}
+
+.user-form h2,
+.user-list h2 {
+    color: #1e293b;
+    font-size: 21px;
+    margin-bottom: 22px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px 22px;
+}
+
+.form-grid > div {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-grid label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+.form-grid input,
+.form-grid select {
+    width: 100%;
+    height: 44px;
+    padding: 0 13px;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+    background: #ffffff;
+    color: #111827;
+    font-size: 14px;
+    outline: none;
+}
+
+.form-grid input:focus,
+.form-grid select:focus {
+    border-color: #2563eb;
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.form-grid small {
+    margin-top: 6px;
+    color: #64748b;
+    font-size: 12px;
+}
+
+.form-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+    padding-top: 22px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.form-buttons button {
+    width: auto;
+    min-width: 150px;
+    padding: 12px 22px;
+    border: none;
+    border-radius: 7px;
+    background: #2563eb;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.form-buttons button:hover {
+    background: #1d4ed8;
+    opacity: 1;
+}
+
+.form-buttons .cancel-btn {
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+}
+
+.form-buttons .cancel-btn:hover {
+    background: #e2e8f0;
+}
+
+.list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.list-header h2 {
+    margin: 0;
+}
+
+#searchInput {
+    width: 280px;
+    height: 42px;
+    padding: 0 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+    outline: none;
+    font-size: 14px;
+}
+
+#searchInput:focus {
+    border-color: #2563eb;
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.10);
+}
+
+.user-list {
+    overflow-x: auto;
+}
+
+.user-list table {
+    width: 100%;
+    min-width: 900px;
+    margin-top: 22px;
+    border-collapse: collapse;
+    border: 1px solid #e5e7eb;
+}
+
+.user-list th {
+    background: #f8fafc;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 14px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.user-list td {
+    padding: 14px;
+    color: #374151;
+    font-size: 14px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.user-list tbody tr:hover {
+    background: #f8fafc;
+}
+
+.edit-btn,
+.delete-btn {
+    width: auto;
+    border: none;
+    border-radius: 6px;
+    padding: 7px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.edit-btn {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.edit-btn:hover {
+    background: #fde68a;
+    opacity: 1;
+}
+
+.delete-btn {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.delete-btn:hover {
+    background: #fecaca;
+    opacity: 1;
+}
+
+.active-status {
+    color: #166534;
+    font-weight: 600;
+}
+
+.inactive-status {
+    color: #b91c1c;
+    font-weight: 600;
+}
+
+@media (max-width: 1100px) {
+
+    .form-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 700px) {
+
+    .content {
+        margin-left: 0;
+        padding: 20px;
+    }
+
+    .sidebar {
+        display: none;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .list-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    #searchInput {
+        width: 100%;
+    }
+
+    .form-buttons {
+        flex-direction: column;
+    }
+
+    .form-buttons button {
+        width: 100%;
+    }
+
+    .user-form,
+    .user-list {
+        padding: 20px;
+    }
+}

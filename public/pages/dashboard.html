@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard - Pharmacy Management System</title>
+
+    <link rel="stylesheet"
+          href="/css/dashboard.css">
+
+</head>
+
+<body>
+
+    <header class="topbar">
+
+        <h2>Pharmacy Management System</h2>
+
+        <div>
+
+            <span id="userName"></span>
+
+            <button id="logoutBtn">
+                Logout
+            </button>
+
+        </div>
+
+    </header>
+
+
+<aside class="sidebar">
+
+    <a href="/pages/dashboard.html">
+        Dashboard
+    </a>
+
+    <a
+        href="/pages/medicines.html"
+        id="medicinesMenu"
+    >
+        Medicines
+    </a>
+
+    <a
+        href="/pages/categories.html"
+        id="categoriesMenu"
+    >
+        Categories
+    </a>
+
+    <a
+        href="/pages/suppliers.html"
+        id="suppliersMenu"
+    >
+        Suppliers
+    </a>
+
+    <a
+        href="/pages/stock.html"
+        id="stockMenu"
+    >
+        Stock
+    </a>
+
+    <a
+        href="/pages/expiry.html"
+        id="expiryMenu"
+    >
+        Expiry Monitoring
+    </a>
+
+    <a
+        href="/pages/sales.html"
+        id="salesMenu"
+    >
+        Sales
+    </a>
+
+    <a
+        href="/pages/users.html"
+        id="usersMenu"
+    >
+        Users
+    </a>
+
+</aside>
+
+
+
+
+    <main class="content">
+
+        <h1>Dashboard</h1>
+
+        <p id="welcomeMessage"></p>
+
+
+        <div class="cards">
+
+            <div class="card">
+
+                <h3>Total Medicines</h3>
+
+                <p id="totalMedicines">
+                    0
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>Total Stock</h3>
+
+                <p id="totalStock">
+                    0
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>Low Stock</h3>
+
+                <p id="lowStock">
+                    0
+                </p>
+
+            </div>
+
+
+            <div class="card">
+
+                <h3>Total Sales</h3>
+
+                <p id="totalSales">
+                    0
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <section class="dashboard-section">
+
+            <h2>Low Stock Medicines</h2>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Medicine</th>
+                        <th>Quantity</th>
+                        <th>Reorder Level</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="lowStockTable">
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </main>
+
+
+    <script src="/js/dashboard.js"></script>
+    <script src="/js/roleMenu.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,267 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Expiry Monitoring - Pharmacy Management System
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/expiry.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- TOP BAR -->
+
+    <header class="topbar">
+
+        <h2>
+            Pharmacy Management System
+        </h2>
+
+        <div>
+
+            <span id="userName"></span>
+
+            <button id="logoutBtn">
+                Logout
+            </button>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <a href="/pages/dashboard.html">
+            Dashboard
+        </a>
+
+        <a href="/pages/medicines.html">
+            Medicines
+        </a>
+
+        <a href="/pages/categories.html">
+            Categories
+        </a>
+
+        <a href="/pages/suppliers.html">
+            Suppliers
+        </a>
+
+        <a href="/pages/stock.html">
+            Stock
+        </a>
+
+        <a href="/pages/expiry.html">
+            Expiry Monitoring
+        </a>
+
+        <a href="/pages/sales.html">
+            Sales
+        </a>
+
+        <a
+            href="/pages/users.html"
+            id="usersMenu"
+        >
+            Users
+        </a>
+
+    </aside>
+
+
+
+    <!-- MAIN CONTENT -->
+
+    <main class="content">
+
+        <h1>
+            Expiry Monitoring
+        </h1>
+
+        <p id="welcomeMessage"></p>
+
+
+
+        <!-- SUMMARY CARDS -->
+
+        <div class="cards">
+
+            <div class="card">
+
+                <h3>
+                    Total With Expiry
+                </h3>
+
+                <p id="totalWithExpiry">
+                    0
+                </p>
+
+            </div>
+
+
+            <div class="card expired-card">
+
+                <h3>
+                    Expired
+                </h3>
+
+                <p id="expired">
+                    0
+                </p>
+
+            </div>
+
+
+            <div class="card expiring-card">
+
+                <h3>
+                    Expiring Soon
+                </h3>
+
+                <p id="expiringSoon">
+                    0
+                </p>
+
+            </div>
+
+
+            <div class="card valid-card">
+
+                <h3>
+                    Valid
+                </h3>
+
+                <p id="valid">
+                    0
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- SEARCH AND FILTER -->
+
+        <section class="expiry-section">
+
+            <div class="filter-container">
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search medicine or batch number"
+                >
+
+
+                <select id="statusFilter">
+
+                    <option value="all">
+                        All
+                    </option>
+
+                    <option value="Expired">
+                        Expired
+                    </option>
+
+                    <option value="Expiring Soon">
+                        Expiring Soon
+                    </option>
+
+                    <option value="Valid">
+                        Valid
+                    </option>
+
+                    <option value="No Expiry Date">
+                        No Expiry Date
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- EXPIRY TABLE -->
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                ID
+                            </th>
+
+                            <th>
+                                Medicine
+                            </th>
+
+                            <th>
+                                Batch Number
+                            </th>
+
+                            <th>
+                                Expiry Date
+                            </th>
+
+                            <th>
+                                Quantity
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Days Remaining
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="expiryTable">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+
+    <script src="/js/expiry.js"></script>
+
+</body>
+
+</html>
+

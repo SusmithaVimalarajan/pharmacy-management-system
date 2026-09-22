@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Stock Management - Pharmacy Management System
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/dashboard.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/css/stock.css"
+    >
+
+</head>
+
+
+<body>
+
+
+<header class="topbar">
+
+    <h2>
+        Pharmacy Management System
+    </h2>
+
+    <div>
+
+        <span id="userName"></span>
+
+        <button id="logoutBtn">
+            Logout
+        </button>
+
+    </div>
+
+</header>
+
+
+<aside class="sidebar">
+
+     <a href="/pages/dashboard.html">
+            Dashboard
+        </a>
+
+        <a href="/pages/medicines.html">
+            Medicines
+        </a>
+
+        <a href="/pages/categories.html">
+            Categories
+        </a>
+
+        <a href="/pages/suppliers.html">
+            Suppliers
+        </a>
+
+        <a href="/pages/stock.html">
+            Stock
+        </a>
+
+        <a href="/pages/expiry.html">
+            Expiry Monitoring
+        </a>
+
+        <a href="/pages/sales.html">
+            Sales
+        </a>
+
+        <a
+            href="/pages/users.html"
+            id="usersMenu"
+        >
+            Users
+        </a>
+
+</aside>
+
+
+<main class="content">
+
+    <h1>
+        Stock Management
+    </h1>
+
+    <p id="welcomeMessage"></p>
+
+
+    <!-- ==========================================
+         STOCK SUMMARY
+         ========================================== -->
+
+    <div class="stock-cards">
+
+        <div class="stock-card">
+
+            <h3>
+                Total Medicines
+            </h3>
+
+            <p id="totalMedicines">
+                0
+            </p>
+
+        </div>
+
+
+        <div class="stock-card">
+
+            <h3>
+                Total Stock
+            </h3>
+
+            <p id="totalStock">
+                0
+            </p>
+
+        </div>
+
+
+        <div class="stock-card low-card">
+
+            <h3>
+                Low Stock
+            </h3>
+
+            <p id="lowStock">
+                0
+            </p>
+
+        </div>
+
+
+        <div class="stock-card">
+
+            <h3>
+                Normal Stock
+            </h3>
+
+            <p id="normalStock">
+                0
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==========================================
+         STOCK LIST
+         ========================================== -->
+
+    <section class="stock-list">
+
+        <div class="list-header">
+
+            <h2>
+                Current Stock
+            </h2>
+
+            <div class="filter-area">
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search medicine..."
+                >
+
+                <select id="stockFilter">
+
+                    <option value="all">
+                        All Stock
+                    </option>
+
+                    <option value="low">
+                        Low Stock
+                    </option>
+
+                    <option value="normal">
+                        Normal Stock
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        ID
+                    </th>
+
+                    <th>
+                        Medicine
+                    </th>
+
+                    <th>
+                        Category
+                    </th>
+
+                    <th>
+                        Batch
+                    </th>
+
+                    <th>
+                        Quantity
+                    </th>
+
+                    <th>
+                        Reorder Level
+                    </th>
+
+                    <th>
+                        Expiry
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th>
+                        Action
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="stockTable"></tbody>
+
+        </table>
+
+    </section>
+
+
+    <!-- ==========================================
+         UPDATE STOCK
+         ========================================== -->
+
+    <section
+        class="stock-update"
+        id="stockUpdateSection"
+    >
+
+        <h2>
+            Update Stock
+        </h2>
+
+        <p id="selectedMedicine">
+            Select a medicine to update stock.
+        </p>
+
+
+        <form id="stockForm">
+
+            <input
+                type="hidden"
+                id="medicineId"
+            >
+
+
+            <div class="update-grid">
+
+                <div>
+
+                    <label>
+                        Quantity
+                    </label>
+
+                    <input
+                        type="number"
+                        id="quantity"
+                        min="0"
+                        required
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Reorder Level
+                    </label>
+
+                    <input
+                        type="number"
+                        id="reorderLevel"
+                        min="0"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="form-buttons">
+
+                <button type="submit">
+                    Update Stock
+                </button>
+
+                <button
+                    type="button"
+                    id="cancelBtn"
+                    class="cancel-btn"
+                >
+                    Cancel
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+</main>
+
+
+<script src="/js/stock.js"></script>
+
+</body>
+
+</html>

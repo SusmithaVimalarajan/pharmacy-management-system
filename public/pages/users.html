@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        User Management - Pharmacy Management System
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/dashboard.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/css/users.css"
+    >
+
+</head>
+
+<body>
+
+<header class="topbar">
+
+    <h2>
+        Pharmacy Management System
+    </h2>
+
+    <div>
+
+        <span id="userName"></span>
+
+        <button id="logoutBtn">
+            Logout
+        </button>
+
+    </div>
+
+</header>
+
+
+<aside class="sidebar">
+
+     <a href="/pages/dashboard.html">
+            Dashboard
+        </a>
+
+        <a href="/pages/medicines.html">
+            Medicines
+        </a>
+
+        <a href="/pages/categories.html">
+            Categories
+        </a>
+
+        <a href="/pages/suppliers.html">
+            Suppliers
+        </a>
+
+        <a href="/pages/stock.html">
+            Stock
+        </a>
+
+        <a href="/pages/expiry.html">
+            Expiry Monitoring
+        </a>
+
+        <a href="/pages/sales.html">
+            Sales
+        </a>
+
+        <a
+            href="/pages/users.html"
+            id="usersMenu"
+        >
+            Users
+        </a>
+</aside>
+
+
+<main class="content">
+
+    <h1>
+        User Management
+    </h1>
+
+    <p id="welcomeMessage"></p>
+
+
+    <section class="user-form">
+
+        <h2 id="formTitle">
+            Add New User
+        </h2>
+
+
+        <form id="userForm">
+
+            <input
+                type="hidden"
+                id="userId"
+            >
+
+
+            <div class="form-grid">
+
+                <div>
+
+                    <label>
+                        Full Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="fullName"
+                        placeholder="Enter full name"
+                        required
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Username
+                    </label>
+
+                    <input
+                        type="text"
+                        id="username"
+                        placeholder="Enter username"
+                        required
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Email
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="Enter email"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Enter password"
+                    >
+
+                    <small id="passwordHint">
+                        Required for new users
+                    </small>
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Role
+                    </label>
+
+                    <select id="role" required>
+
+                        <option value="">
+                            Select Role
+                        </option>
+
+                        <option value="admin">
+                            Admin
+                        </option>
+
+                        <option value="pharmacist">
+                            Pharmacist
+                        </option>
+
+                        <option value="staff">
+                            Pharmacy Staff
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Status
+                    </label>
+
+                    <select id="status">
+
+                        <option value="active">
+                            Active
+                        </option>
+
+                        <option value="inactive">
+                            Inactive
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-buttons">
+
+                <button type="submit">
+                    Save User
+                </button>
+
+                <button
+                    type="button"
+                    id="cancelBtn"
+                    class="cancel-btn"
+                >
+                    Cancel
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+
+    <section class="user-list">
+
+        <div class="list-header">
+
+            <h2>
+                User List
+            </h2>
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search user..."
+            >
+
+        </div>
+
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Full Name</th>
+
+                    <th>Username</th>
+
+                    <th>Email</th>
+
+                    <th>Role</th>
+
+                    <th>Status</th>
+
+                    <th>Actions</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="userTable"></tbody>
+
+        </table>
+
+    </section>
+
+</main>
+
+
+<script src="/js/users.js"></script>
+
+</body>
+
+</html>

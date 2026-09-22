@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Suppliers - Pharmacy Management System
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/dashboard.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="/css/suppliers.css"
+    >
+
+</head>
+
+<body>
+
+<header class="topbar">
+
+    <h2>
+        Pharmacy Management System
+    </h2>
+
+    <div>
+
+        <span id="userName"></span>
+
+        <button id="logoutBtn">
+            Logout
+        </button>
+
+    </div>
+
+</header>
+
+
+<aside class="sidebar">
+
+     <a href="/pages/dashboard.html">
+            Dashboard
+        </a>
+
+        <a href="/pages/medicines.html">
+            Medicines
+        </a>
+
+        <a href="/pages/categories.html">
+            Categories
+        </a>
+
+        <a href="/pages/suppliers.html">
+            Suppliers
+        </a>
+
+        <a href="/pages/stock.html">
+            Stock
+        </a>
+
+        <a href="/pages/expiry.html">
+            Expiry Monitoring
+        </a>
+
+        <a href="/pages/sales.html">
+            Sales
+        </a>
+
+        <a
+            href="/pages/users.html"
+            id="usersMenu"
+        >
+            Users
+        </a>
+
+</aside>
+
+
+<main class="content">
+
+    <h1>
+        Supplier Management
+    </h1>
+
+    <p id="welcomeMessage"></p>
+
+
+    <!-- SUPPLIER FORM -->
+
+    <section class="supplier-form">
+
+        <h2 id="formTitle">
+            Add New Supplier
+        </h2>
+
+
+        <form id="supplierForm">
+
+            <input
+                type="hidden"
+                id="supplierId"
+            >
+
+
+            <div class="form-grid">
+
+                <div>
+
+                    <label>
+                        Supplier Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="supplierName"
+                        placeholder="Enter supplier name"
+                        required
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Company Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="companyName"
+                        placeholder="Enter company name"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Phone
+                    </label>
+
+                    <input
+                        type="text"
+                        id="phone"
+                        placeholder="Enter phone number"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Email
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="Enter email"
+                    >
+
+                </div>
+
+
+                <div class="full-width">
+
+                    <label>
+                        Address
+                    </label>
+
+                    <textarea
+                        id="address"
+                        placeholder="Enter supplier address"
+                    ></textarea>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-buttons">
+
+                <button type="submit">
+                    Save Supplier
+                </button>
+
+                <button
+                    type="button"
+                    id="cancelBtn"
+                    class="cancel-btn"
+                >
+                    Cancel
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+
+    <!-- SUPPLIER LIST -->
+
+    <section class="supplier-list">
+
+        <div class="list-header">
+
+            <h2>
+                Supplier List
+            </h2>
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search supplier..."
+            >
+
+        </div>
+
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Supplier</th>
+
+                    <th>Company</th>
+
+                    <th>Phone</th>
+
+                    <th>Email</th>
+
+                    <th>Address</th>
+
+                    <th>Actions</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="supplierTable">
+
+            </tbody>
+
+        </table>
+
+    </section>
+
+</main>
+
+
+<script src="/js/suppliers.js"></script>
+
+</body>
+
+</html>
