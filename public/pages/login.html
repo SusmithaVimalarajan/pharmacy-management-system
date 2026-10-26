@@ -34,18 +34,34 @@
 
                 </div>
 
-                <div class="input-group">
+               
+<div class="input-group">
 
-                    <label>Password</label>
+    <label>Password</label>
 
-                    <input
-                        type="password"
-                        id="password"
-                        placeholder="Enter password"
-                        required
-                    >
+    <div class="password-wrapper">
 
-                </div>
+        <input
+            type="password"
+            id="password"
+            placeholder="Enter password"
+            required
+        >
+
+        <button
+            type="button"
+            id="togglePassword"
+            class="toggle-password"
+            aria-label="Show password"
+            aria-pressed="false"
+        >
+            <span id="eyeIcon" aria-hidden="true">👁</span>
+        </button>
+
+    </div>
+
+</div>
+
 
                 <button type="submit">
                     Login

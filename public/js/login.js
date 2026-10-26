@@ -65,3 +65,50 @@ loginForm.addEventListener("submit", async function(event) {
     }
 
 });
+
+
+
+const passwordInput = document.getElementById("password");
+
+const togglePassword = document.getElementById("togglePassword");
+
+const eyeIcon = document.getElementById("eyeIcon");
+
+
+togglePassword.addEventListener("click", function () {
+
+    if (passwordInput.type === "password") {
+
+        passwordInput.type = "text";
+
+        eyeIcon.textContent = "🚫";
+
+        togglePassword.setAttribute(
+            "aria-label",
+            "Hide password"
+        );
+
+        togglePassword.setAttribute(
+            "aria-pressed",
+            "true"
+        );
+
+    } else {
+
+        passwordInput.type = "password";
+
+        eyeIcon.textContent = "👁";
+
+        togglePassword.setAttribute(
+            "aria-label",
+            "Show password"
+        );
+
+        togglePassword.setAttribute(
+            "aria-pressed",
+            "false"
+        );
+
+    }
+
+});
